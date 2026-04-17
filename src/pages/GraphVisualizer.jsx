@@ -403,27 +403,7 @@ export default function GraphVisualizer() {
             )}
           </div>
 
-          <div className="explanation-panel glass properties-panel" style={{ marginTop: '1.5rem' }}>
-             <div className="ds-header">
-                <h3><span style={{ opacity: 0.6 }}>ⓘ</span> Graph Properties</h3>
-             </div>
-             
-             <div className="property-section">
-                <h4>Structure</h4>
-                <p>A graph consists of a set of vertices (nodes) and a set of edges connecting these vertices. This implementation uses an adjacency list representation.</p>
-             </div>
 
-             <div className="property-section" style={{ marginTop: '1rem' }}>
-                <h4>Time Complexity</h4>
-                <table className="complexity-table">
-                   <tbody>
-                      <tr><td>Add Vertex:</td><td>O(1)</td></tr>
-                      <tr><td>Add Edge:</td><td>O(1)</td></tr>
-                      <tr><td>BFS/DFS:</td><td>O(V + E)</td></tr>
-                   </tbody>
-                </table>
-             </div>
-          </div>
 
           <div className="explanation-panel glass status-panel" style={{ marginTop: '1.5rem' }}>
              <h3>Execution Details</h3>
@@ -436,6 +416,63 @@ export default function GraphVisualizer() {
         </div>
       </div>
       
+      {/* Theory & Complexity Panel */}
+      <section className="glass" style={{ margin: '2rem', padding: '1.5rem', borderRadius: '15px' }}>
+         <div className="ds-header" style={{ marginBottom: '1rem' }}>
+            <h3 style={{ fontSize: '1.3rem', color: 'var(--text-main)' }}><span style={{ opacity: 0.7, marginRight: '8px' }}>📚</span> Graph Theory & Mechanics</h3>
+         </div>
+         
+         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2rem' }}>
+            {/* Left Column: What is a Graph */}
+            <div style={{ flex: '1 1 300px' }}>
+               <h4 style={{ color: 'var(--secondary-color)', marginBottom: '0.6rem', fontSize: '1rem' }}>What is a Graph?</h4>
+               <p style={{ color: 'var(--text-muted)', lineHeight: '1.6', fontSize: '0.95rem' }}>
+                  A Graph is a non-linear data structure consisting of <strong>Vertices (Nodes)</strong> and <strong>Edges (Lines)</strong>. 
+                  Unlike trees, graphs can have closed loops (cycles) and do not require a central root node. They are used to represent complex networks like roads or social connections.
+               </p>
+               
+               <h4 style={{ color: 'var(--secondary-color)', marginTop: '1.2rem', marginBottom: '0.6rem', fontSize: '1rem' }}>Core Operations</h4>
+               <ul style={{ color: 'var(--text-muted)', lineHeight: '1.6', fontSize: '0.95rem', paddingLeft: '1.2rem' }}>
+                  <li><strong style={{ color: '#10B981' }}>Add Node/Edge:</strong> In an Adjacency List topology, inserting a vertex or mapping an edge connection operates locally without rebinding the whole map.</li>
+                  <li style={{ marginTop: '0.4rem' }}><strong style={{ color: '#EF4444' }}>DFS (Depth-First Search):</strong> Plunges deep down a single branch until it hits a dead end before backtracking. Powered recursively strictly via a Stack.</li>
+                  <li style={{ marginTop: '0.4rem' }}><strong style={{ color: '#3b82f6' }}>BFS (Breadth-First Search):</strong> Scans neighbors radially layer-by-layer starting from the origin point. Powered strictly via a Queue.</li>
+               </ul>
+            </div>
+
+            {/* Right Column: Complexities */}
+            <div style={{ flex: '1 1 300px', background: 'rgba(0,0,0,0.2)', padding: '1.5rem', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
+               <h4 style={{ color: 'var(--text-main)', marginBottom: '1rem', fontSize: '1.05rem', display: 'flex', alignItems: 'center' }}>
+                  <span style={{ color: '#A855F7', marginRight: '8px' }}>⚡</span> Time & Space Complexity
+               </h4>
+               
+               <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.95rem' }}>
+                  <tbody>
+                     <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                        <td style={{ padding: '10px 0', color: 'var(--secondary-color)' }}>Add Vertex/Edge</td>
+                        <td style={{ textAlign: 'right', fontWeight: 'bold', fontFamily: 'monospace', color: '#10B981' }}>O(1)</td>
+                     </tr>
+                     <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                        <td style={{ padding: '10px 0', color: 'var(--secondary-color)' }}>Remove Vertex</td>
+                        <td style={{ textAlign: 'right', fontWeight: 'bold', fontFamily: 'monospace', color: '#EAB308' }}>O(V + E)</td>
+                     </tr>
+                     <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                        <td style={{ padding: '10px 0', color: 'var(--secondary-color)' }}>BFS Traversal</td>
+                        <td style={{ textAlign: 'right', fontWeight: 'bold', fontFamily: 'monospace', color: '#10B981' }}>O(V + E)</td>
+                     </tr>
+                     <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                        <td style={{ padding: '10px 0', color: 'var(--secondary-color)' }}>DFS Traversal</td>
+                        <td style={{ textAlign: 'right', fontWeight: 'bold', fontFamily: 'monospace', color: '#10B981' }}>O(V + E)</td>
+                     </tr>
+                     <tr>
+                        <td style={{ padding: '10px 0', color: 'var(--secondary-color)' }}>Space Complexity</td>
+                        <td style={{ textAlign: 'right', fontWeight: 'bold', fontFamily: 'monospace', color: '#EAB308' }}>O(V + E)</td>
+                     </tr>
+                  </tbody>
+               </table>
+            </div>
+         </div>
+      </section>
+
       <div className="toast-container">
          {toasts.map(t => (
             <div key={t.id} className={`toast ${t.fading ? 'fade-out' : ''}`}>

@@ -232,8 +232,8 @@ export default function QueueVisualizer() {
   return (
     <main className="visualizer-page">
       <div className="visualizer-header">
-        <h1 className="text-gradient">Queue Visualization</h1>
-        <p>FIFO (First In, First Out) structure. Elements are enqueued at the REAR and dequeued from the FRONT.</p>
+        <h1 className="text-gradient">Queue Visualizer</h1>
+        <p>Explore the FIFO (First-In-First-Out) schedule with interactive pointers.</p>
       </div>
 
       <div className="controls-panel glass">
@@ -347,6 +347,63 @@ export default function QueueVisualizer() {
           </div>
         </div>
       </div>
+
+      {/* Theory & Complexity Panel */}
+      <section className="glass" style={{ margin: '2rem', padding: '1.5rem', borderRadius: '15px' }}>
+         <div className="ds-header" style={{ marginBottom: '1rem' }}>
+            <h3 style={{ fontSize: '1.3rem', color: 'var(--text-main)' }}><span style={{ opacity: 0.7, marginRight: '8px' }}>📚</span> Queue Theory & Mechanics</h3>
+         </div>
+         
+         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2rem' }}>
+            {/* Left Column: What is a Queue */}
+            <div style={{ flex: '1 1 300px' }}>
+               <h4 style={{ color: 'var(--secondary-color)', marginBottom: '0.6rem', fontSize: '1rem' }}>What is a Queue?</h4>
+               <p style={{ color: 'var(--text-muted)', lineHeight: '1.6', fontSize: '0.95rem' }}>
+                  A Queue is a linear data structure that processes commands in a <strong>FIFO (First In, First Out)</strong> order. 
+                  Imagine a line of people waiting for a ticket—the first person to join the line is the exactly the first person to be served.
+               </p>
+               
+               <h4 style={{ color: 'var(--secondary-color)', marginTop: '1.2rem', marginBottom: '0.6rem', fontSize: '1rem' }}>Core Operations</h4>
+               <ul style={{ color: 'var(--text-muted)', lineHeight: '1.6', fontSize: '0.95rem', paddingLeft: '1.2rem' }}>
+                  <li><strong style={{ color: '#10B981' }}>Enqueue:</strong> Adds an element to the <em>rear</em> of the queue. Throws an Overflow error if full.</li>
+                  <li style={{ marginTop: '0.4rem' }}><strong style={{ color: '#EF4444' }}>Dequeue:</strong> Removes and returns the element at the <em>front</em>. Throws an Underflow error if empty.</li>
+                  <li style={{ marginTop: '0.4rem' }}><strong style={{ color: '#3b82f6' }}>Peek/Front:</strong> Returns the front element without evaluating a removal operation.</li>
+               </ul>
+            </div>
+
+            {/* Right Column: Complexities */}
+            <div style={{ flex: '1 1 300px', background: 'rgba(0,0,0,0.2)', padding: '1.5rem', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
+               <h4 style={{ color: 'var(--text-main)', marginBottom: '1rem', fontSize: '1.05rem', display: 'flex', alignItems: 'center' }}>
+                  <span style={{ color: '#A855F7', marginRight: '8px' }}>⚡</span> Time & Space Complexity
+               </h4>
+               
+               <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.95rem' }}>
+                  <tbody>
+                     <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                        <td style={{ padding: '10px 0', color: 'var(--secondary-color)' }}>Enqueue</td>
+                        <td style={{ textAlign: 'right', fontWeight: 'bold', fontFamily: 'monospace', color: '#10B981' }}>O(1)</td>
+                     </tr>
+                     <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                        <td style={{ padding: '10px 0', color: 'var(--secondary-color)' }}>Dequeue</td>
+                        <td style={{ textAlign: 'right', fontWeight: 'bold', fontFamily: 'monospace', color: '#10B981' }}>O(1)</td>
+                     </tr>
+                     <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                        <td style={{ padding: '10px 0', color: 'var(--secondary-color)' }}>Peek</td>
+                        <td style={{ textAlign: 'right', fontWeight: 'bold', fontFamily: 'monospace', color: '#10B981' }}>O(1)</td>
+                     </tr>
+                     <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                        <td style={{ padding: '10px 0', color: 'var(--secondary-color)' }}>Search</td>
+                        <td style={{ textAlign: 'right', fontWeight: 'bold', fontFamily: 'monospace', color: '#EAB308' }}>O(N)</td>
+                     </tr>
+                     <tr>
+                        <td style={{ padding: '10px 0', color: 'var(--secondary-color)' }}>Space Complexity</td>
+                        <td style={{ textAlign: 'right', fontWeight: 'bold', fontFamily: 'monospace', color: '#EAB308' }}>O(N)</td>
+                     </tr>
+                  </tbody>
+               </table>
+            </div>
+         </div>
+      </section>
     </main>
   );
 }

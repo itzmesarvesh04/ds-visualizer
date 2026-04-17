@@ -501,8 +501,8 @@ export default function TreeVisualizer() {
   return (
     <main className="visualizer-page">
       <div className="visualizer-header">
-        <h1 className="text-gradient">Binary Search Tree</h1>
-        <p>A hierarchical structure where left children are strictly less than the parent, and right children are strictly greater. Includes fundamental traversals.</p>
+        <h1 className="text-gradient">Binary Search Tree Visualizer</h1>
+        <p>Explore hierarchical data with O(log N) operations and recursive traversals.</p>
       </div>
 
       <div className="controls-panel glass">
@@ -605,6 +605,62 @@ export default function TreeVisualizer() {
             </div>
          ))}
       </div>
+
+      {/* Theory & Complexity Panel */}
+      <section className="glass" style={{ margin: '2rem', padding: '1.5rem', borderRadius: '15px' }}>
+         <div className="ds-header" style={{ marginBottom: '1rem' }}>
+            <h3 style={{ fontSize: '1.3rem', color: 'var(--text-main)' }}><span style={{ opacity: 0.7, marginRight: '8px' }}>📚</span> Tree Theory & Mechanics</h3>
+         </div>
+         
+         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2rem' }}>
+            {/* Left Column: What is a Tree */}
+            <div style={{ flex: '1 1 300px' }}>
+               <h4 style={{ color: 'var(--secondary-color)', marginBottom: '0.6rem', fontSize: '1rem' }}>What is a Binary Search Tree (BST)?</h4>
+               <p style={{ color: 'var(--text-muted)', lineHeight: '1.6', fontSize: '0.95rem' }}>
+                  A BST is a hierarchical node-based data structure. It guarantees that the value of each left child node is strictly <strong>less than</strong> its parent, and the right child node is <strong>greater than</strong> its parent.
+               </p>
+               
+               <h4 style={{ color: 'var(--secondary-color)', marginTop: '1.2rem', marginBottom: '0.6rem', fontSize: '1rem' }}>Core Operations</h4>
+               <ul style={{ color: 'var(--text-muted)', lineHeight: '1.6', fontSize: '0.95rem', paddingLeft: '1.2rem' }}>
+                  <li><strong style={{ color: '#10B981' }}>Insert:</strong> Recursively traverse left (if smaller) or right (if larger) until an empty null pointer is found.</li>
+                  <li style={{ marginTop: '0.4rem' }}><strong style={{ color: '#EF4444' }}>Delete:</strong> Handles 3 discrete scenarios: deleting a leaf (no children), a node with 1 child, or a node with 2 children (requires finding an In-Order Successor).</li>
+                  <li style={{ marginTop: '0.4rem' }}><strong style={{ color: '#3b82f6' }}>Traverse:</strong> In-Order (Left-Root-Right) yields sorted values. Pre-Order evaluates boundaries. Post-Order resolves leaf dependencies.</li>
+               </ul>
+            </div>
+
+            {/* Right Column: Complexities */}
+            <div style={{ flex: '1 1 300px', background: 'rgba(0,0,0,0.2)', padding: '1.5rem', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
+               <h4 style={{ color: 'var(--text-main)', marginBottom: '1rem', fontSize: '1.05rem', display: 'flex', alignItems: 'center' }}>
+                  <span style={{ color: '#A855F7', marginRight: '8px' }}>⚡</span> Time & Space Complexity
+               </h4>
+               
+               <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.95rem' }}>
+                  <tbody>
+                     <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                        <td style={{ padding: '10px 0', color: 'var(--secondary-color)' }}>Insert Operation</td>
+                        <td style={{ textAlign: 'right', fontWeight: 'bold', fontFamily: 'monospace', color: '#10B981' }}>O(log N)</td>
+                     </tr>
+                     <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                        <td style={{ padding: '10px 0', color: 'var(--secondary-color)' }}>Delete Operation</td>
+                        <td style={{ textAlign: 'right', fontWeight: 'bold', fontFamily: 'monospace', color: '#10B981' }}>O(log N)</td>
+                     </tr>
+                     <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                        <td style={{ padding: '10px 0', color: 'var(--secondary-color)' }}>Search</td>
+                        <td style={{ textAlign: 'right', fontWeight: 'bold', fontFamily: 'monospace', color: '#10B981' }}>O(log N)</td>
+                     </tr>
+                     <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                        <td style={{ padding: '10px 0', color: 'var(--secondary-color)' }}>Worst Case (Unbalanced)</td>
+                        <td style={{ textAlign: 'right', fontWeight: 'bold', fontFamily: 'monospace', color: '#EF4444' }}>O(N)</td>
+                     </tr>
+                     <tr>
+                        <td style={{ padding: '10px 0', color: 'var(--secondary-color)' }}>Space Complexity</td>
+                        <td style={{ textAlign: 'right', fontWeight: 'bold', fontFamily: 'monospace', color: '#EAB308' }}>O(N)</td>
+                     </tr>
+                  </tbody>
+               </table>
+            </div>
+         </div>
+      </section>
     </main>
   );
 }

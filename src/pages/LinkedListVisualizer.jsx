@@ -316,8 +316,8 @@ export default function LinkedListVisualizer() {
   return (
     <main className="visualizer-page">
       <div className="visualizer-header">
-        <h1 className="text-gradient">Linked List Visualization</h1>
-        <p>A dynamic data structure consisting of Nodes. Each Node holds data and a pointer mapping strictly to the next Node.</p>
+        <h1 className="text-gradient">Linked List Visualizer</h1>
+        <p>Understand dynamic memory allocation and pointer traversal.</p>
       </div>
 
       <div className="controls-panel glass">
@@ -433,6 +433,59 @@ export default function LinkedListVisualizer() {
           </div>
         </div>
       </div>
+
+      {/* Theory & Complexity Panel */}
+      <section className="glass" style={{ margin: '2rem', padding: '1.5rem', borderRadius: '15px' }}>
+         <div className="ds-header" style={{ marginBottom: '1rem' }}>
+            <h3 style={{ fontSize: '1.3rem', color: 'var(--text-main)' }}><span style={{ opacity: 0.7, marginRight: '8px' }}>📚</span> Linked List Theory & Mechanics</h3>
+         </div>
+         
+         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2rem' }}>
+            {/* Left Column: What is a Linked List */}
+            <div style={{ flex: '1 1 300px' }}>
+               <h4 style={{ color: 'var(--secondary-color)', marginBottom: '0.6rem', fontSize: '1rem' }}>What is a Linked List?</h4>
+               <p style={{ color: 'var(--text-muted)', lineHeight: '1.6', fontSize: '0.95rem' }}>
+                  A Linked List is a linear data structure composed of <strong>Nodes</strong>. Unlike arrays, nodes are not stored contiguously in memory. 
+                  Each node stores both its <strong>Data/Value</strong> and a specific <strong>Pointer/Address</strong> referencing the next node in sequence.
+               </p>
+               
+               <h4 style={{ color: 'var(--secondary-color)', marginTop: '1.2rem', marginBottom: '0.6rem', fontSize: '1rem' }}>Core Operations</h4>
+               <ul style={{ color: 'var(--text-muted)', lineHeight: '1.6', fontSize: '0.95rem', paddingLeft: '1.2rem' }}>
+                  <li><strong style={{ color: '#10B981' }}>Insert:</strong> Dynamically allocate memory for a new node. Map its pointer to the subsequent node, then remap the preceding node's pointer.</li>
+                  <li style={{ marginTop: '0.4rem' }}><strong style={{ color: '#EF4444' }}>Delete:</strong> Find the preceding block and re-attach its pointer to leap over the target node.</li>
+                  <li style={{ marginTop: '0.4rem' }}><strong style={{ color: '#3b82f6' }}>Traverse:</strong> Linear shift starting directly from the Head pointer navigating via each memory link.</li>
+               </ul>
+            </div>
+
+            {/* Right Column: Complexities */}
+            <div style={{ flex: '1 1 300px', background: 'rgba(0,0,0,0.2)', padding: '1.5rem', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
+               <h4 style={{ color: 'var(--text-main)', marginBottom: '1rem', fontSize: '1.05rem', display: 'flex', alignItems: 'center' }}>
+                  <span style={{ color: '#A855F7', marginRight: '8px' }}>⚡</span> Time & Space Complexity
+               </h4>
+               
+               <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.95rem' }}>
+                  <tbody>
+                     <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                        <td style={{ padding: '10px 0', color: 'var(--secondary-color)' }}>Insert (Head/Tail)</td>
+                        <td style={{ textAlign: 'right', fontWeight: 'bold', fontFamily: 'monospace', color: '#10B981' }}>O(1)</td>
+                     </tr>
+                     <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                        <td style={{ padding: '10px 0', color: 'var(--secondary-color)' }}>Insert/Delete (Mid)</td>
+                        <td style={{ textAlign: 'right', fontWeight: 'bold', fontFamily: 'monospace', color: '#EAB308' }}>O(N)</td>
+                     </tr>
+                     <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                        <td style={{ padding: '10px 0', color: 'var(--secondary-color)' }}>Search</td>
+                        <td style={{ textAlign: 'right', fontWeight: 'bold', fontFamily: 'monospace', color: '#EAB308' }}>O(N)</td>
+                     </tr>
+                     <tr>
+                        <td style={{ padding: '10px 0', color: 'var(--secondary-color)' }}>Space Complexity</td>
+                        <td style={{ textAlign: 'right', fontWeight: 'bold', fontFamily: 'monospace', color: '#EAB308' }}>O(N)</td>
+                     </tr>
+                  </tbody>
+               </table>
+            </div>
+         </div>
+      </section>
     </main>
   );
 }

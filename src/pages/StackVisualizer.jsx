@@ -249,8 +249,8 @@ export default function StackVisualizer() {
   return (
     <main className="visualizer-page">
       <div className="visualizer-header">
-        <h1 className="text-gradient">Stack Visualization</h1>
-        <p>LIFO (Last In, First Out) Data Structure</p>
+        <h1 className="text-gradient">Stack Visualizer</h1>
+        <p>Master the LIFO (Last-In-First-Out) concept through interactive animations.</p>
       </div>
 
       <div className="controls-panel glass">
@@ -352,6 +352,63 @@ export default function StackVisualizer() {
           </div>
         </div>
       </div>
+
+      {/* Theory & Complexity Panel */}
+      <section className="glass" style={{ margin: '2rem', padding: '1.5rem', borderRadius: '15px' }}>
+         <div className="ds-header" style={{ marginBottom: '1rem' }}>
+            <h3 style={{ fontSize: '1.3rem', color: 'var(--text-main)' }}><span style={{ opacity: 0.7, marginRight: '8px' }}>📚</span> Stack Theory & Mechanics</h3>
+         </div>
+         
+         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2rem' }}>
+            {/* Left Column: What is a Stack */}
+            <div style={{ flex: '1 1 300px' }}>
+               <h4 style={{ color: 'var(--secondary-color)', marginBottom: '0.6rem', fontSize: '1rem' }}>What is a Stack?</h4>
+               <p style={{ color: 'var(--text-muted)', lineHeight: '1.6', fontSize: '0.95rem' }}>
+                  A Stack is a linear data structure that follows a precise execution order. The order is <strong>LIFO (Last In, First Out)</strong>. 
+                  Think of it like a stack of plates in a cafeteria—you can only add or remove the plate located at the very top.
+               </p>
+               
+               <h4 style={{ color: 'var(--secondary-color)', marginTop: '1.2rem', marginBottom: '0.6rem', fontSize: '1rem' }}>Core Operations</h4>
+               <ul style={{ color: 'var(--text-muted)', lineHeight: '1.6', fontSize: '0.95rem', paddingLeft: '1.2rem' }}>
+                  <li><strong style={{ color: '#10B981' }}>Push:</strong> Adds an element to the top of the stack. If the stack is at maximum capacity, it throws an <em>Overflow</em> error.</li>
+                  <li style={{ marginTop: '0.4rem' }}><strong style={{ color: '#EF4444' }}>Pop:</strong> Removes the top element from the stack. If the stack is empty, it throws an <em>Underflow</em> error.</li>
+                  <li style={{ marginTop: '0.4rem' }}><strong style={{ color: '#3b82f6' }}>Peek/Top:</strong> Returns the top element without removing it.</li>
+               </ul>
+            </div>
+
+            {/* Right Column: Complexities */}
+            <div style={{ flex: '1 1 300px', background: 'rgba(0,0,0,0.2)', padding: '1.5rem', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
+               <h4 style={{ color: 'var(--text-main)', marginBottom: '1rem', fontSize: '1.05rem', display: 'flex', alignItems: 'center' }}>
+                  <span style={{ color: '#A855F7', marginRight: '8px' }}>⚡</span> Time & Space Complexity
+               </h4>
+               
+               <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.95rem' }}>
+                  <tbody>
+                     <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                        <td style={{ padding: '10px 0', color: 'var(--secondary-color)' }}>Push Operation</td>
+                        <td style={{ textAlign: 'right', fontWeight: 'bold', fontFamily: 'monospace', color: '#10B981' }}>O(1)</td>
+                     </tr>
+                     <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                        <td style={{ padding: '10px 0', color: 'var(--secondary-color)' }}>Pop Operation</td>
+                        <td style={{ textAlign: 'right', fontWeight: 'bold', fontFamily: 'monospace', color: '#10B981' }}>O(1)</td>
+                     </tr>
+                     <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                        <td style={{ padding: '10px 0', color: 'var(--secondary-color)' }}>Peek Operation</td>
+                        <td style={{ textAlign: 'right', fontWeight: 'bold', fontFamily: 'monospace', color: '#10B981' }}>O(1)</td>
+                     </tr>
+                     <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                        <td style={{ padding: '10px 0', color: 'var(--secondary-color)' }}>Search</td>
+                        <td style={{ textAlign: 'right', fontWeight: 'bold', fontFamily: 'monospace', color: '#EAB308' }}>O(N)</td>
+                     </tr>
+                     <tr>
+                        <td style={{ padding: '10px 0', color: 'var(--secondary-color)' }}>Space Complexity</td>
+                        <td style={{ textAlign: 'right', fontWeight: 'bold', fontFamily: 'monospace', color: '#EAB308' }}>O(N)</td>
+                     </tr>
+                  </tbody>
+               </table>
+            </div>
+         </div>
+      </section>
     </main>
   );
 }
