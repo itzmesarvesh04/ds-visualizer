@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Graph | DS Visualizer</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="bg-glow blob-1"></div>
+  <div class="bg-glow blob-2"></div>
+  
+  <div id="toast-container" class="toast-container"></div>
+  
+  <nav class="navbar glass">
+    <a href="index.html" class="logo" style="text-decoration: none;">
+      <div class="logo-icon"></div>
+      DS Visualizer
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="index.html#visualizer">Visualizer</a></li>
+    </ul>
+    <button class="btn btn-primary nav-btn">Start Learning</button>
+  </nav>
+
+  <main class="visualizer-page">
+    <div class="visualizer-header">
+      <h1 class="text-gradient">Graph Visualizer</h1>
+      <p>Explore relationships between nodes using Directed and Undirected graphs. Learn BFS and DFS algorithms step-by-step.</p>
+    </div>
+
+    <!-- Main Visualizer Area -->
+    <div class="visualizer-workspace graph-upgrade-workspace">
+      
+      <!-- Left: Graph SVG Canvas -->
+      <div class="ds-container glass blue-glow-subtle" id="graph-canvas-container">
+        <div class="ds-header">
+           <h3 id="canvas-title">Visualization</h3>
+           <p style="font-size: 0.8rem; opacity: 0.6; margin-top: -5px;">Visual representation of the graph</p>
+           <span class="badge glass" id="graph-stats">Nodes: 0 | Edges: 0</span>
+        </div>
+        
+        <div class="tree-wrapper" id="graph-wrapper" style="overflow: hidden; height: 500px;">
+           <svg id="graph-svg">
+              <defs>
+                 <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="25" refY="3.5" orient="auto">
+                    <polygon points="0 0, 10 3.5, 0 7" class="edge-arrow" />
+                 </marker>
+                 <marker id="arrowhead-highlight" markerWidth="10" markerHeight="7" refX="25" refY="3.5" orient="auto">
+                    <polygon points="0 0, 10 3.5, 0 7" fill="#F59E0B" />
+                 </marker>
+              </defs>
+           </svg>
+        </div>
+
+        <!-- Traversal Result -->
+        <div class="traversal-output-container glass" style="margin: 1rem;">
+           <div class="output-label">Traversal Path:</div>
+           <div class="output-sequence" id="output-sequence">
+              <span style="color: rgba(255,255,255,0.3)">Result will appear here...</span>
+           </div>
+        </div>
+      </div>
+
+      <!-- Right Column -->
+      <div class="right-column-stack">
+        
+        <!-- Operations Panel -->
+        <div class="explanation-panel glass operations-panel">
+          <div class="ds-header">
+             <h3>Operations</h3>
+             <p style="font-size: 0.8rem; opacity: 0.6; margin-top: -5px;">Perform operations on the graph</p>
+          </div>
+
+          <div class="tabs-container">
+             <button class="tab-btn active" data-tab="vertex">Vertex</button>
+             <button class="tab-btn" data-tab="edge">Edge</button>
+             <button class="tab-btn" data-tab="traversal">Traversal</button>
+          </div>
+
+          <!-- Vertex Tab Content -->
+          <div class="tab-content active" id="tab-vertex">
+             <div class="form-group">
+                <label>Vertex Name</label>
+                <input type="text" id="vertex-name" class="input-glass" placeholder="Enter vertex name">
+                <button id="btn-add-vertex" class="btn btn-primary btn-full" style="margin-top: 1rem;">+ Add Vertex</button>
+             </div>
+          </div>
+
+          <!-- Edge Tab Content -->
+          <div class="tab-content" id="tab-edge">
+             <div class="form-group">
+                <label>Source Vertex</label>
+                <select id="edge-source" class="select-glass"></select>
+             </div>
+             <div class="form-group" style="margin-top: 1rem;">
+                <label>Target Vertex</label>
+                <select id="edge-target" class="select-glass"></select>
+             </div>
+             <button id="btn-add-edge" class="btn btn-primary btn-full" style="margin-top: 1.5rem;">+ Add Edge</button>
+          </div>
+
+          <!-- Traversal Tab Content -->
+          <div class="tab-content" id="tab-traversal">
+             <div class="form-group">
+                <label>Traversal Type</label>
+                <select id="traversal-type" class="select-glass">
+                   <option value="dfs">Depth-First Search (DFS)</option>
+                   <option value="bfs">Breadth-First Search (BFS)</option>
+                </select>
+             </div>
+             <div class="form-group" style="margin-top: 1rem;">
+                <label>Start Vertex</label>
+                <select id="traversal-start" class="select-glass"></select>
+             </div>
+             <button id="btn-start-traversal" class="btn btn-primary btn-full" style="margin-top: 1.5rem;">Start Traversal</button>
+          </div>
+        </div>
+
+        <!-- Graph Properties -->
+        <div class="explanation-panel glass properties-panel" style="margin-top: 1.5rem;">
+           <div class="ds-header">
+              <h3><span style="opacity: 0.6;">ⓘ</span> Graph Properties</h3>
+           </div>
+           
+           <div class="property-section">
+              <h4>Structure</h4>
+              <p>A graph consists of a set of vertices (nodes) and a set of edges connecting these vertices. This implementation uses an **adjacency list** representation.</p>
+           </div>
+
+           <div class="property-section" style="margin-top: 1rem;">
+              <h4>Time Complexity</h4>
+              <table class="complexity-table">
+                 <tr><td>Add Vertex:</td><td>O(1)</td></tr>
+                 <tr><td>Add Edge:</td><td>O(1)</td></tr>
+                 <tr><td>BFS/DFS:</td><td>O(V + E)</td></tr>
+              </table>
+           </div>
+        </div>
+
+        <!-- Execution Details (Moved or integrated) -->
+        <div class="explanation-panel glass status-panel" style="margin-top: 1.5rem;">
+           <h3>Execution Details</h3>
+           <div class="status-log" id="status-log">
+              <p class="log-entry info">Visualizer initialized.</p>
+           </div>
+        </div>
+      </div>
+      
+    </div>
+  </main>
+  
+  <footer class="footer glass" style="margin-top: 50px;">
+    <div class="footer-content">
+      <div class="footer-brand">
+        <div class="logo">
+           <div class="logo-icon small"></div>
+           DS Visualizer
+        </div>
+        <p>A comprehensive platform for mastering data structures through interactive construction and step-by-step logic.</p>
+      </div>
+      <div class="footer-links" style="display: flex; gap: 4rem;">
+        <div>
+          <h4>Visualizers</h4>
+          <ul style="list-style: none; padding: 0;">
+            <li><a href="stack.html" style="color: var(--secondary-color); text-decoration: none; font-size: 0.9rem; margin-bottom: 0.5rem; display: block;">Stack</a></li>
+            <li><a href="queue.html" style="color: var(--secondary-color); text-decoration: none; font-size: 0.9rem; margin-bottom: 0.5rem; display: block;">Queue</a></li>
+            <li><a href="linkedlist.html" style="color: var(--secondary-color); text-decoration: none; font-size: 0.9rem; margin-bottom: 0.5rem; display: block;">Linked List</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Hierarchical</h4>
+          <ul style="list-style: none; padding: 0;">
+            <li><a href="tree.html" style="color: var(--secondary-color); text-decoration: none; font-size: 0.9rem; margin-bottom: 0.5rem; display: block;">Binary Tree (BST)</a></li>
+            <li><a href="graph.html" style="color: var(--secondary-color); text-decoration: none; font-size: 0.9rem; margin-bottom: 0.5rem; display: block;">Graph Visualizer</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom" style="margin-top: 2rem; border-top: 1px solid var(--glass-border); padding-top: 1.5rem; text-align: center;">
+      <p>&copy; 2026 DS Visualizer. Built by tech enthusiasts.</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+  <script src="graph.js"></script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+# Local history
+.gemini/
+.idea/
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temp files
+*.tmp
+*.log

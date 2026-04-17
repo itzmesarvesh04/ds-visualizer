@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Linked List | DS Visualizer</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="bg-glow blob-1"></div>
+  <div class="bg-glow blob-2"></div>
+  
+  <div id="toast-container" class="toast-container"></div>
+  
+  <nav class="navbar glass">
+    <a href="index.html" class="logo" style="text-decoration: none;">
+      <div class="logo-icon"></div>
+      DS Visualizer
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="index.html#visualizer">Visualizer</a></li>
+      <li><a href="index.html#about">About</a></li>
+    </ul>
+  </nav>
+
+  <main class="visualizer-page">
+    <div class="visualizer-header">
+      <h1 class="text-gradient">Linked List Visualization</h1>
+      <p>A dynamic data structure consisting of Nodes. Each Node holds data and a pointer mapping strictly to the next Node.</p>
+    </div>
+
+    <!-- Top Controls -->
+    <div class="controls-panel glass">
+      <div class="control-group">
+        <input type="text" id="ll-input" class="input-glass" placeholder="Enter value...">
+        <button id="btn-insert-head" class="btn btn-primary small-btn">Insert Head</button>
+        <button id="btn-insert-tail" class="btn btn-primary small-btn">Insert Tail</button>
+        <button id="btn-delete" class="btn btn-secondary glass small-btn">Delete (Value)</button>
+        <button id="btn-traverse" class="btn btn-secondary glass small-btn">Traverse</button>
+        <button id="btn-reset" class="btn btn-secondary glass small-btn">Reset</button>
+      </div>
+      
+      <div class="control-divider"></div>
+      
+      <div class="control-group animation-controls">
+        <button class="icon-btn play-btn" title="Auto Play">▶</button>
+        <button class="icon-btn pause-btn" title="Pause">⏸</button>
+        <button class="icon-btn next-btn" title="Next Step">⏭</button>
+        
+        <div class="speed-slider-container">
+          <label>Speed</label>
+          <input type="range" min="1" max="5" value="3" class="slider" id="ll-speed">
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Visualizer Area -->
+    <div class="visualizer-workspace">
+      
+      <!-- Top Full Span: LL Container -->
+      <div class="ds-container glass blue-glow-subtle" style="grid-column: 1 / -1; min-height: 250px;">
+        <div class="ds-header">
+           <h3>Linked List View</h3>
+           <span class="badge glass" id="ll-size-badge">Nodes: 0</span>
+        </div>
+        
+        <div class="ll-wrapper" id="ll-container">
+          <div class="ll-track" id="ll-track">
+             <!-- Head Pointer Indicator -->
+             <div class="ll-pointer-indicator" id="head-indicator" style="opacity:0;">HEAD</div>
+             <!-- Nodes and Arrows injected here -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Left: Memory Container -->
+      <div class="ds-container glass purple-glow-subtle" style="grid-column: 1 / 3;">
+         <div class="ds-header">
+           <h3>Dynamic Memory</h3>
+           <span class="badge glass">Heap Allocation Maps</span>
+         </div>
+         <div class="memory-wrapper horizontal-memory" id="memory-container">
+            <!-- Memory blocks injected -->
+         </div>
+      </div>
+
+      <!-- Bottom Right: Explanation Panel -->
+      <div class="explanation-panel glass" style="grid-column: 3 / -1;">
+        <h3>Execution Details</h3>
+        <div class="code-execution">
+          <pre><code id="code-panel"></code></pre>
+        </div>
+        
+        <div class="status-log" id="status-log">
+           <p class="log-entry info">Visualizer initialized.</p>
+        </div>
+      </div>
+      
+    </div>
+  </main>
+  
+  <footer class="footer glass" style="margin-top: 50px;">
+    <div class="footer-content" style="max-width: 1200px; margin: 0 auto; padding: 0 2rem; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 2rem;">
+      <div class="footer-brand" style="flex: 1; min-width: 250px;">
+        <div class="logo">
+           <div class="logo-icon small"></div>
+           DS Visualizer
+        </div>
+        <p style="color: var(--text-muted); font-size: 0.9rem; max-width: 400px; margin-top: 1rem;">Master hierarchical and linear data structures through interactive animations and real-time execution logs.</p>
+      </div>
+      <div class="footer-links" style="display: flex; gap: 4rem;">
+        <div>
+          <h4 style="color: var(--text-main); margin-bottom: 1rem;">Visualizers</h4>
+          <ul style="list-style: none; padding: 0;">
+            <li><a href="stack.html" style="color: var(--secondary-color); text-decoration: none; font-size: 0.9rem; margin-bottom: 0.5rem; display: block;">Stack</a></li>
+            <li><a href="queue.html" style="color: var(--secondary-color); text-decoration: none; font-size: 0.9rem; margin-bottom: 0.5rem; display: block;">Queue</a></li>
+            <li><a href="linkedlist.html" style="color: var(--secondary-color); text-decoration: none; font-size: 0.9rem; margin-bottom: 0.5rem; display: block;">Linked List</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 style="color: var(--text-main); margin-bottom: 1rem;">Hierarchical</h4>
+          <ul style="list-style: none; padding: 0;">
+            <li><a href="tree.html" style="color: var(--secondary-color); text-decoration: none; font-size: 0.9rem; margin-bottom: 0.5rem; display: block;">Binary Tree (BST)</a></li>
+            <li><a href="graph.html" style="color: var(--secondary-color); text-decoration: none; font-size: 0.9rem; margin-bottom: 0.5rem; display: block;">Graph Visualizer</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom" style="margin-top: 2rem; border-top: 1px solid var(--glass-border); padding-top: 1.5rem; text-align: center;">
+      <p style="color: var(--text-muted); font-size: 0.8rem;">&copy; 2026 DS Visualizer. Built by tech enthusiasts.</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+  <script src="linkedlist.js"></script>
+</body>
+</html>
