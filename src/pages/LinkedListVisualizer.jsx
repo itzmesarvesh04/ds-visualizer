@@ -9,6 +9,7 @@ export default function LinkedListVisualizer() {
   const [headAddr, setHeadAddr] = useState(null);
   
   const [inputValue, setInputValue] = useState('');
+  const [inputIndex, setInputIndex] = useState('');
   const logContainerRef = useRef(null);
   
   // Track animation classes for physical nodes, arrows, and memory blocks
@@ -161,6 +162,187 @@ export default function LinkedListVisualizer() {
         currentAddr = nodeData.nextAddr;
     }
     
+    engine.executeSteps(steps);
+  };
+
+  const insertAtIndex = () => {
+    const value = inputValue.trim();
+    const indexStr = inputIndex.trim();
+    
+    if (engine.isExecuting) { engine.logAction("Wait for operation to finish.", "error"); return; }
+    if (!value) { engine.logAction("Please enter a value.", "error"); return; }
+    if (indexStr === "") { engine.logAction("Please enter an index.", "error"); return; }
+    
+    const index = parseInt(indexStr);
+    const listLength = memoryPool.length;
+
+    if (isNaN(index) || index < 0 || index > listLength) {
+        engine.logAction(`Invalid index. Must be between 0 and ${listLength}.`, "error");
+        return;
+    }
+
+    if (index === 0) {
+        insertHead(value);
+        return;
+    }
+
+    if (index === listLength) {
+        insertTail();
+        return;
+    }
+
+    const newAddr = generateAddress();
+    setInputValue('');
+    setInputIndex('');
+
+    const steps = [
+        async () => {
+             engine.logAction(`Step 1: Traversing to index ${index-1}...`, "info");
+             engine.updateCode([`let temp = head;`, `for(let i=0; i<${index-1}; i++) { temp = temp.next; }`]);
+        }
+    ];
+
+    let currentAddr = headAddr;
+    for (let i = 0; i < index; i++) {
+        let loopAddr = currentAddr;
+        let nodeData = memoryPool.find(n => n.addr === loopAddr);
+        
+        if (i < index - 1) {
+            steps.push(async () => {
+                engine.logAction(`Visiting index ${i} [${loopAddr}]`, "info");
+                highlightNode(loopAddr, 'highlight-yellow traverse-scale');
+                await engine.sleep(engine.getDelay());
+                highlightNode(loopAddr, 'idle');
+            });
+            currentAddr = nodeData.nextAddr;
+        } else {
+            // We are at index - 1
+            steps.push(async () => {
+                engine.logAction(`Reached index ${index-1} [${loopAddr}]. Target found.`, "success");
+                highlightNode(loopAddr, 'highlight-yellow');
+                await engine.sleep(engine.getDelay());
+            });
+
+            steps.push(async () => {
+                engine.logAction(`Step 2: Allocating new node [${newAddr}]`, "info");
+                engine.updateCode([`let newNode = new Node("${value}");`]);
+                setMemoryPool(prev => [...prev, { addr: newAddr, value: value, nextAddr: null }]);
+                highlightMemBlock(newAddr, 'highlight-mem');
+            });
+
+            steps.push(async () => {
+                engine.logAction(`Step 3: Linking newNode.next = temp.next`, "info");
+                engine.updateCode([`newNode.next = head;`]); // Note: Using newNode.next = temp.next in logic but head is just a placeholder here
+                setMemoryPool(prev => prev.map(m => m.addr === newAddr ? { ...m, nextAddr: nodeData.nextAddr } : m));
+                await engine.sleep(engine.getDelay());
+            });
+
+            steps.push(async () => {
+                engine.logAction(`Step 4: Linking temp.next = newNode`, "success");
+                engine.updateCode([`temp.next = newNode;`]);
+                setMemoryPool(prev => prev.map(m => m.addr === loopAddr ? { ...m, nextAddr: newAddr } : m));
+                
+                highlightNode(newAddr, 'll-insert-anim highlight-green');
+                setArrowState(newAddr, 'll-arrow-grow');
+                
+                await engine.sleep(engine.getDelay());
+                highlightNode(loopAddr, 'idle');
+                highlightNode(newAddr, 'idle');
+                highlightMemBlock(newAddr, null);
+            });
+        }
+    }
+
+    engine.executeSteps(steps);
+  };
+
+  const deleteHead = () => {
+    if (engine.isExecuting) return;
+    if (!headAddr) { engine.logAction("List is empty!", "error"); return; }
+
+    const targetAddr = headAddr;
+    const nodeData = memoryPool.find(n => n.addr === targetAddr);
+
+    engine.executeSteps([
+        async () => {
+            engine.logAction(`Step 1: Targeting current HEAD [${targetAddr}]`, "info");
+            engine.updateCode([`let temp = head;`]);
+            highlightNode(targetAddr, 'highlight-red');
+            highlightMemBlock(targetAddr, 'highlight-mem-delete');
+            await engine.sleep(engine.getDelay());
+        },
+        async () => {
+            engine.logAction(`Step 2: Pointing head to head.next [${nodeData.nextAddr || 'NULL'}]`, "info");
+            engine.updateCode([`head = head.next;`]);
+            setWrapperState(targetAddr, 'fade-out-anim');
+            setHeadAddr(nodeData.nextAddr);
+            await engine.sleep(engine.getDelay());
+        },
+        async () => {
+            engine.logAction(`Step 3: Freeing memory at [${targetAddr}]`, "success");
+            setMemoryPool(prev => prev.filter(m => m.addr !== targetAddr));
+            engine.updateCode([`// Memory freed`]);
+        }
+    ]);
+  };
+
+  const deleteTail = () => {
+    if (engine.isExecuting) return;
+    if (!headAddr) { engine.logAction("List is empty!", "error"); return; }
+
+    const nodes = [];
+    let curr = headAddr;
+    while(curr) {
+        const data = memoryPool.find(n => n.addr === curr);
+        nodes.push(data);
+        curr = data.nextAddr;
+    }
+
+    if (nodes.length === 1) {
+        deleteHead();
+        return;
+    }
+
+    const steps = [
+        async () => {
+            engine.logAction("Step 1: Traversing to find the second-to-last node...", "info");
+            engine.updateCode([`let temp = head;`, `while(temp.next.next != null) { temp = temp.next; }`]);
+        }
+    ];
+
+    for (let i = 0; i < nodes.length - 1; i++) {
+        const loopAddr = nodes[i].addr;
+        steps.push(async () => {
+            highlightNode(loopAddr, 'highlight-yellow traverse-scale');
+            await engine.sleep(engine.getDelay());
+            highlightNode(loopAddr, 'idle');
+        });
+    }
+
+    const penultNode = nodes[nodes.length - 2];
+    const lastNode = nodes[nodes.length - 1];
+
+    steps.push(async () => {
+        engine.logAction(`Step 2: Targeting tail node [${lastNode.addr}]`, "info");
+        highlightNode(lastNode.addr, 'highlight-red');
+        highlightMemBlock(lastNode.addr, 'highlight-mem-delete');
+        await engine.sleep(engine.getDelay());
+    });
+
+    steps.push(async () => {
+        engine.logAction(`Step 3: Setting penultimate node's next to NULL`, "info");
+        engine.updateCode([`temp.next = null;`]);
+        setWrapperState(lastNode.addr, 'fade-out-anim');
+        setMemoryPool(prev => prev.map(m => m.addr === penultNode.addr ? { ...m, nextAddr: null } : m));
+        await engine.sleep(engine.getDelay());
+    });
+
+    steps.push(async () => {
+        engine.logAction(`Step 4: Freeing memory at [${lastNode.addr}]`, "success");
+        setMemoryPool(prev => prev.filter(m => m.addr !== lastNode.addr));
+        engine.updateCode([`// Memory freed`]);
+    });
+
     engine.executeSteps(steps);
   };
 
@@ -322,14 +504,29 @@ export default function LinkedListVisualizer() {
 
       <div className="controls-panel glass">
         <div className="control-group">
-          <input type="text" className="input-glass" placeholder="Enter value..."
-            value={inputValue} onChange={e => setInputValue(e.target.value)}
-            onKeyDown={e => e.key === 'Enter' && insertTail()} />
-          <button onClick={() => insertHead()} className="btn btn-primary small-btn">Insert Head</button>
-          <button onClick={insertTail} className="btn btn-primary small-btn">Insert Tail</button>
-          <button onClick={deleteNode} className="btn btn-secondary glass small-btn">Delete (Value)</button>
-          <button onClick={traverse} className="btn btn-secondary glass small-btn">Traverse</button>
-          <button onClick={resetList} className="btn btn-secondary glass small-btn">Reset</button>
+          <div className="input-row">
+            <input type="text" className="input-glass" placeholder="Value..."
+              value={inputValue} onChange={e => setInputValue(e.target.value)} />
+            <input type="number" className="input-glass" style={{ width: '80px' }} placeholder="Index..."
+              value={inputIndex} onChange={e => setInputIndex(e.target.value)} />
+          </div>
+          
+          <div className="button-row">
+            <button onClick={() => insertHead()} className="btn btn-primary small-btn">Insert Head</button>
+            <button onClick={() => insertAtIndex()} className="btn btn-primary small-btn">Insert @ Index</button>
+            <button onClick={insertTail} className="btn btn-primary small-btn">Insert Tail</button>
+          </div>
+
+          <div className="button-row">
+            <button onClick={deleteHead} className="btn btn-secondary glass small-btn">Delete Head</button>
+            <button onClick={deleteTail} className="btn btn-secondary glass small-btn">Delete Tail</button>
+            <button onClick={deleteNode} className="btn btn-secondary glass small-btn">Delete (Value)</button>
+          </div>
+          
+          <div className="button-row">
+            <button onClick={traverse} className="btn btn-secondary glass small-btn">Traverse</button>
+            <button onClick={resetList} className="btn btn-secondary glass small-btn">Reset</button>
+          </div>
         </div>
         
         <div className="control-divider"></div>

@@ -46,6 +46,16 @@ body {
   animation: fadeIn 0.4s ease-in-out;
 }
 
+.layout-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.main-content {
+  flex: 1;
+}
+
 body.fade-out {
   opacity: 0;
   transition: opacity 0.3s ease-in-out;
