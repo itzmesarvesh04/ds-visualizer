@@ -1,5 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useVisualizerEngine } from '../hooks/useVisualizerEngine';
+import MemoryPanel from '../components/common/MemoryPanel';
+
+const MEM_BASE_ADDR = 0x2A0; // Base simulated memory address for graph
 
 export default function GraphVisualizer() {
   const engine = useVisualizerEngine();
@@ -24,7 +27,10 @@ export default function GraphVisualizer() {
   const svgRef = useRef(null);
   const logContainerRef = useRef(null);
   const [svgDims, setSvgDims] = useState({ width: 800, height: 500 });
-  const [isDirected, setIsDirected] = useState(false); // Can be toggleable if desired, logic is built to handle it. Defaulting to undirected for simplicity of demo, but let's keep it undirected.
+  const [isDirected, setIsDirected] = useState(false);
+
+  // Memory Panel state
+  const [showMemory, setShowMemory] = useState(true);
 
   useEffect(() => {
     if (logContainerRef.current) {
@@ -66,6 +72,36 @@ export default function GraphVisualizer() {
   const resetAlgorithmStates = () => {
       setElementStates({});
       setOutputSequence([]);
+  };
+
+  // --- Helper: Generate hex address for a node name ---
+  const getGraphHexAddr = (name) => {
+    // Simple hash: sum char codes, use as offset
+    let hash = 0;
+    for (let i = 0; i < String(name).length; i++) {
+      hash = ((hash << 5) - hash + String(name).charCodeAt(i)) | 0;
+    }
+    return '0x' + ((MEM_BASE_ADDR + (Math.abs(hash) % 0x400)) * 1).toString(16).toUpperCase();
+  };
+
+  // --- Build memory nodes for MemoryPanel ---
+  const buildGraphMemoryNodes = () => {
+    const nodeIds = Object.keys(nodes);
+    // Create a stable address map
+    const addrMap = {};
+    nodeIds.forEach((id, i) => {
+      addrMap[id] = '0x' + (MEM_BASE_ADDR + i * 4).toString(16).toUpperCase();
+    });
+
+    return nodeIds.map(id => ({
+      id,
+      address: addrMap[id],
+      value: id,
+      pointers: {
+        neighbors: nodes[id].neighbors.map(nId => addrMap[nId] || '???'),
+        neighborNames: nodes[id].neighbors,
+      }
+    }));
   };
 
   const addVertex = () => {
@@ -252,6 +288,9 @@ export default function GraphVisualizer() {
 
   const nodeOptions = Object.keys(nodes).map(id => <option key={id} value={id}>{id}</option>);
 
+  // Build memory data for MemoryPanel
+  const graphMemoryNodes = buildGraphMemoryNodes();
+
   return (
     <main className="visualizer-page">
       <div className="visualizer-header">
@@ -403,8 +442,6 @@ export default function GraphVisualizer() {
             )}
           </div>
 
-
-
           <div className="explanation-panel glass status-panel" style={{ marginTop: '1.5rem' }}>
              <h3>Execution Details</h3>
              <div className="status-log" ref={logContainerRef}>
@@ -415,6 +452,14 @@ export default function GraphVisualizer() {
           </div>
         </div>
       </div>
+
+      {/* Memory Management Panel — full width below workspace */}
+      <MemoryPanel
+        nodes={graphMemoryNodes}
+        type="graph"
+        visible={showMemory}
+        onToggle={() => setShowMemory(prev => !prev)}
+      />
       
       {/* Theory & Complexity Panel */}
       <section className="glass" style={{ margin: '2rem', padding: '1.5rem', borderRadius: '15px' }}>

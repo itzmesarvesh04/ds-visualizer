@@ -246,6 +246,24 @@ export default function StackVisualizer() {
     }
   };
 
+  // Calculate TOP pointer position
+  // The stack renders reversed (top element is first visually), so the TOP pointer
+  // should point at the first rendered element (top of stack-body)
+  const stackHasElements = stack.length > 0;
+  // Each stack-item is 50px tall + 8px margin-top. The stack is flex-end aligned.
+  // The TOP pointer must be positioned relative to the top-most item.
+  // Since flex-direction is column and justify-content is flex-end,
+  // the last item in DOM (which is the bottom of stack) is at the bottom.
+  // The first rendered item (reversed[0]) is at the top.
+  // TOP pointer offset from top of stack-body: we need to track where the first item sits
+  // With flex-end, items pile from bottom. Total items height = stack.length * (50 + 8) - 8 + some padding
+  // The topmost item sits at: total_body_height - items_height
+  // Let's calculate a simpler approach: position from the top of first visible item
+  const itemHeight = 58; // 50px height + 8px margin-top
+  const topPointerTop = stackHasElements 
+    ? `calc(100% - ${stack.length * itemHeight}px - 10px + 17px)` // 10px padding, center of 50px item = 25px, but 17px looks cleaner
+    : '0';
+
   return (
     <main className="visualizer-page">
       <div className="visualizer-header">
@@ -308,6 +326,18 @@ export default function StackVisualizer() {
                 );
               })}
               <div className="stack-base"></div>
+
+              {/* Dynamic TOP Pointer */}
+              <div
+                className="stack-top-pointer"
+                style={{
+                  top: topPointerTop,
+                  opacity: stackHasElements ? 1 : 0,
+                }}
+              >
+                <span className="top-arrow">←</span>
+                <span className="top-label">TOP</span>
+              </div>
             </div>
           </div>
         </div>

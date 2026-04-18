@@ -1,7 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useVisualizerEngine } from '../hooks/useVisualizerEngine';
+import MemoryPanel from '../components/common/MemoryPanel';
+import TraversalPath from '../components/common/TraversalPath';
 
 const MAX_NODES = 15;
+const MEM_BASE_ADDR = 0x1A0; // Base simulated memory address
 
 export default function TreeVisualizer() {
   const engine = useVisualizerEngine();
@@ -19,6 +22,15 @@ export default function TreeVisualizer() {
   
   const [elementStates, setElementStates] = useState({});
   const [toasts, setToasts] = useState([]);
+
+  // Memory Panel state
+  const [showMemory, setShowMemory] = useState(true);
+
+  // Traversal Path state
+  const [traversalSequence, setTraversalSequence] = useState([]);
+  const [currentTraversalIndex, setCurrentTraversalIndex] = useState(-1);
+  const [traversalLabel, setTraversalLabel] = useState('Traversal Path');
+  const [showTraversal, setShowTraversal] = useState(false);
 
   const showErrorToast = (msg) => {
       engine.logAction(msg, "error");
@@ -51,6 +63,24 @@ export default function TreeVisualizer() {
       `let root = null;`
     ]);
   }, []);
+
+  // --- Helper: Generate hex address for a node id ---
+  const getHexAddr = (nodeId) => '0x' + (MEM_BASE_ADDR + nodeId * 4).toString(16).toUpperCase();
+
+  // --- Build memory nodes array from nodesMap for MemoryPanel ---
+  const buildMemoryNodes = () => {
+    return Object.values(nodesMap).map(node => ({
+      id: node.id,
+      address: getHexAddr(node.id),
+      value: node.value,
+      pointers: {
+        left: node.leftId ? getHexAddr(node.leftId) : null,
+        right: node.rightId ? getHexAddr(node.rightId) : null,
+        leftValue: node.leftId && nodesMap[node.leftId] ? nodesMap[node.leftId].value : null,
+        rightValue: node.rightId && nodesMap[node.rightId] ? nodesMap[node.rightId].value : null,
+      }
+    }));
+  };
 
   const highlightNode = (id, className) => {
     setElementStates(prev => ({ ...prev, [`node-${id}`]: className }));
@@ -103,7 +133,6 @@ export default function TreeVisualizer() {
     let isLeft = false;
 
     // Simulate traversal to find insertion point
-    // We capture states to build steps, meaning we need to trace values without modifying state yet
     let simulatedMap = JSON.parse(JSON.stringify(nodesMap));
     
     while (currId) {
@@ -403,22 +432,32 @@ export default function TreeVisualizer() {
     if (engine.isExecuting) return;
     if (!rootId) { showErrorToast("Tree is empty!"); return; }
     
+    // Reset traversal state
+    setTraversalSequence([]);
+    setCurrentTraversalIndex(-1);
+    setTraversalLabel(`${type} Traversal`);
+    setShowTraversal(true);
+
     const steps = [
         async () => engine.logAction(`Initializing ${type} Traversal`, "info")
     ];
 
     const mappedSteps = [];
     const simulatedMap = nodesMap;
+    let stepCounter = 0; // Track the index in the traversal sequence
 
     const traverseInorder = (nodeId) => {
         if (!nodeId) return;
         traverseInorder(simulatedMap[nodeId].leftId);
         let loopId = nodeId;
         let loopVal = simulatedMap[nodeId].value;
+        let capturedIndex = stepCounter++;
         mappedSteps.push(async () => {
             engine.logAction(`Visiting Node: ${loopVal}`, "success");
             engine.updateCode([`inorder(node.left);`, `console.log(node.value);`, `inorder(node.right);`]);
             highlightNode(loopId, 'tree-node-highlight');
+            setTraversalSequence(prev => [...prev, loopVal]);
+            setCurrentTraversalIndex(capturedIndex);
             await engine.sleep(engine.getDelay() * 1.5);
             highlightNode(loopId, null);
         });
@@ -429,10 +468,13 @@ export default function TreeVisualizer() {
         if (!nodeId) return;
         let loopId = nodeId;
         let loopVal = simulatedMap[nodeId].value;
+        let capturedIndex = stepCounter++;
         mappedSteps.push(async () => {
             engine.logAction(`Visiting Node: ${loopVal}`, "success");
             engine.updateCode([`console.log(node.value);`, `preorder(node.left);`, `preorder(node.right);`]);
             highlightNode(loopId, 'tree-node-highlight');
+            setTraversalSequence(prev => [...prev, loopVal]);
+            setCurrentTraversalIndex(capturedIndex);
             await engine.sleep(engine.getDelay() * 1.5);
             highlightNode(loopId, null);
         });
@@ -446,10 +488,13 @@ export default function TreeVisualizer() {
         traversePostorder(simulatedMap[nodeId].rightId);
         let loopId = nodeId;
         let loopVal = simulatedMap[nodeId].value;
+        let capturedIndex = stepCounter++;
         mappedSteps.push(async () => {
             engine.logAction(`Visiting Node: ${loopVal}`, "success");
             engine.updateCode([`postorder(node.left);`, `postorder(node.right);`, `console.log(node.value);`]);
             highlightNode(loopId, 'tree-node-highlight');
+            setTraversalSequence(prev => [...prev, loopVal]);
+            setCurrentTraversalIndex(capturedIndex);
             await engine.sleep(engine.getDelay() * 1.5);
             highlightNode(loopId, null);
         });
@@ -460,7 +505,10 @@ export default function TreeVisualizer() {
     else if (type === 'Postorder') traversePostorder(rootId);
     
     steps.push(...mappedSteps);
-    steps.push(async () => engine.logAction(`${type} Traversal Completed.`, "success"));
+    steps.push(async () => {
+        engine.logAction(`${type} Traversal Completed.`, "success");
+        setCurrentTraversalIndex(-1); // Clear active highlight, keep sequence visible
+    });
     
     engine.executeSteps(steps);
   };
@@ -483,6 +531,9 @@ export default function TreeVisualizer() {
              engine.logAction("Tree wiped structurally.", "success");
              engine.updateCode([`root = null;`]);
              setElementStates({});
+             setTraversalSequence([]);
+             setCurrentTraversalIndex(-1);
+             setShowTraversal(false);
          }
     ]);
   };
@@ -497,6 +548,9 @@ export default function TreeVisualizer() {
       buildLayout(layoutMap[id].rightId, x + dx, y + 80, dx * 0.55);
   };
   buildLayout(rootId, svgWidth / 2, 40, svgWidth / 4);
+
+  // Build memory data for MemoryPanel
+  const memoryNodes = buildMemoryNodes();
 
   return (
     <main className="visualizer-page">
@@ -578,6 +632,14 @@ export default function TreeVisualizer() {
                 })}
              </svg>
           </div>
+
+          {/* Traversal Path panel — appears below tree canvas */}
+          <TraversalPath
+            sequence={traversalSequence}
+            currentIndex={currentTraversalIndex}
+            label={traversalLabel}
+            visible={showTraversal}
+          />
         </div>
 
         <div className="explanation-panel glass">
@@ -597,6 +659,14 @@ export default function TreeVisualizer() {
           </div>
         </div>
       </div>
+
+      {/* Memory Management Panel — full width below workspace */}
+      <MemoryPanel
+        nodes={memoryNodes}
+        type="tree"
+        visible={showMemory}
+        onToggle={() => setShowMemory(prev => !prev)}
+      />
       
       <div className="toast-container">
          {toasts.map(t => (

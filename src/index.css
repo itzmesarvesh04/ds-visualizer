@@ -1647,3 +1647,388 @@ a.card {
     color: rgba(148, 163, 184, 0.5);
     font-weight: bold;
 }
+
+/* ============================================
+   MEMORY MANAGEMENT PANEL
+   ============================================ */
+.memory-panel-container {
+  border-radius: 20px;
+  overflow: hidden;
+  margin-top: 1.5rem;
+}
+
+.memory-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.memory-panel-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.memory-panel-title h3 {
+  margin-bottom: 0;
+  font-size: 1.1rem;
+}
+
+.memory-panel-icon {
+  font-size: 1.3rem;
+  filter: drop-shadow(0 0 4px rgba(168, 85, 247, 0.4));
+}
+
+.memory-toggle-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--glass-border);
+  color: var(--text-muted);
+  padding: 0.4rem 1rem;
+  border-radius: 8px;
+  font-family: var(--font-family);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.memory-toggle-btn:hover {
+  background: var(--glass-highlight);
+  color: white;
+}
+
+.memory-panel-body {
+  overflow: hidden;
+  transition: max-height 0.4s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.3s ease, padding 0.3s ease;
+}
+
+.memory-panel-body.expanded {
+  max-height: 600px;
+  opacity: 1;
+  padding: 1.25rem;
+}
+
+.memory-panel-body.collapsed {
+  max-height: 0;
+  opacity: 0;
+  padding: 0 1.25rem;
+}
+
+.memory-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 2rem;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.memory-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 12px;
+}
+
+.memory-card {
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--glass-border);
+  border-radius: 14px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  position: relative;
+  animation: cardFadeIn 0.4s ease forwards;
+}
+
+@keyframes cardFadeIn {
+  from { opacity: 0; transform: translateY(8px) scale(0.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.memory-card:hover {
+  border-color: rgba(167, 139, 250, 0.4);
+  background: rgba(0, 0, 0, 0.35);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+.memory-card.highlight-new {
+  border-color: rgba(16, 185, 129, 0.6) !important;
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.25), inset 0 0 8px rgba(16, 185, 129, 0.1) !important;
+  animation: cardFadeIn 0.4s ease forwards, newGlow 1.5s ease-out forwards;
+}
+
+@keyframes newGlow {
+  0% { box-shadow: 0 0 30px rgba(16, 185, 129, 0.5); }
+  100% { box-shadow: 0 0 10px rgba(16, 185, 129, 0.15); }
+}
+
+.memory-card.highlight-delete {
+  border-color: rgba(239, 68, 68, 0.6) !important;
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.3), inset 0 0 8px rgba(239, 68, 68, 0.1) !important;
+  animation: deleteFlash 0.6s ease forwards;
+}
+
+@keyframes deleteFlash {
+  0% { opacity: 1; }
+  50% { opacity: 0.4; }
+  100% { opacity: 1; }
+}
+
+.memory-card-addr {
+  display: flex;
+  justify-content: center;
+}
+
+.memory-hex {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #A78BFA;
+  background: rgba(167, 139, 250, 0.1);
+  padding: 3px 10px;
+  border-radius: 6px;
+  letter-spacing: 0.5px;
+}
+
+.memory-card-value {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.memory-label {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.memory-val {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: white;
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.15);
+}
+
+.memory-card-pointers {
+  display: flex;
+  gap: 6px;
+}
+
+.pointer-field {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 5px 4px;
+  position: relative;
+  cursor: default;
+}
+
+.pointer-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #60A5FA;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.pointer-value {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #10B981;
+  word-break: break-all;
+  text-align: center;
+}
+
+.pointer-value.null {
+  color: #64748B;
+  font-style: italic;
+}
+
+.pointer-tooltip {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px solid rgba(167, 139, 250, 0.5);
+  color: #A78BFA;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 8px;
+  white-space: nowrap;
+  z-index: 20;
+  pointer-events: none;
+  animation: tooltipIn 0.2s ease forwards;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+@keyframes tooltipIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(4px); }
+  to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+.memory-card-adjacency {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.adjacency-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  justify-content: center;
+}
+
+.adjacency-chip {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #22D3EE;
+  background: rgba(34, 211, 238, 0.1);
+  border: 1px solid rgba(34, 211, 238, 0.25);
+  padding: 2px 8px;
+  border-radius: 6px;
+  cursor: default;
+  transition: all 0.2s ease;
+}
+
+.adjacency-chip:hover {
+  background: rgba(34, 211, 238, 0.2);
+  border-color: rgba(34, 211, 238, 0.5);
+  transform: scale(1.05);
+}
+
+.memory-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--glass-border);
+  border-radius: 10px;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.memory-summary strong {
+  color: #A78BFA;
+}
+
+/* ============================================
+   TRAVERSAL PATH (Tree)
+   ============================================ */
+.traversal-path-container {
+  border-radius: 15px;
+  padding: 0.8rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  overflow-x: auto;
+  margin-top: 1rem;
+  min-height: 60px;
+}
+
+.traversal-path-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.traversal-path-icon {
+  font-size: 1.1rem;
+}
+
+.traversal-current {
+  background: rgba(245, 158, 11, 0.25) !important;
+  border-color: #F59E0B !important;
+  box-shadow: 0 0 18px rgba(245, 158, 11, 0.5), inset 0 0 8px rgba(255, 255, 255, 0.15) !important;
+  color: #FDE68A !important;
+  transform: scale(1.1);
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.traversal-visited {
+  background: rgba(16, 185, 129, 0.15) !important;
+  border-color: rgba(16, 185, 129, 0.5) !important;
+  color: #6EE7B7 !important;
+  transition: all 0.3s ease;
+}
+
+@keyframes pop-in {
+  0% { transform: scale(0); opacity: 0; }
+  60% { transform: scale(1.15); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* ============================================
+   STACK TOP POINTER
+   ============================================ */
+.stack-body {
+  position: relative;
+}
+
+.stack-top-pointer {
+  position: absolute;
+  right: -75px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: #A855F7;
+  transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+  z-index: 5;
+  pointer-events: none;
+}
+
+.stack-top-pointer .top-arrow {
+  font-size: 1.4rem;
+  color: #A855F7;
+  animation: pulseArrow 1.5s ease-in-out infinite;
+  line-height: 1;
+}
+
+@keyframes pulseArrow {
+  0%, 100% { opacity: 1; transform: translateX(0); }
+  50% { opacity: 0.6; transform: translateX(-3px); }
+}
+
+.stack-top-pointer .top-label {
+  background: rgba(168, 85, 247, 0.15);
+  border: 1px solid rgba(168, 85, 247, 0.4);
+  padding: 3px 10px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  letter-spacing: 1px;
+  text-shadow: 0 0 8px rgba(168, 85, 247, 0.4);
+}
+
+/* ============================================
+   TREE WORKSPACE WITH MEMORY PANEL
+   ============================================ */
+.tree-bottom-panels {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  grid-column: 1 / -1;
+}
