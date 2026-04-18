@@ -109,8 +109,26 @@ export default function GraphVisualizer() {
       if (!name) { showErrorToast("Please enter a vertex name."); return; }
       if (nodes[name]) { showErrorToast("Vertex already exists."); return; }
       
-      const x = 100 + Math.random() * (svgDims.width - 200);
-      const y = 100 + Math.random() * (svgDims.height - 200);
+      let x, y;
+      let validPosition = false;
+      let attempts = 0;
+      
+      // Prevent overlapping by enforcing minimum 110px distance between centers
+      while (!validPosition && attempts < 50) {
+          x = 150 + Math.random() * 500;
+          y = 100 + Math.random() * 300;
+          validPosition = true;
+          
+          for (const key in nodes) {
+              const existingNode = nodes[key];
+              const dist = Math.sqrt(Math.pow(existingNode.x - x, 2) + Math.pow(existingNode.y - y, 2));
+              if (dist < 110) {
+                  validPosition = false;
+                  break;
+              }
+          }
+          attempts++;
+      }
       
       setNodes(prev => ({ ...prev, [name]: { id: name, x, y, neighbors: [] } }));
       
@@ -302,18 +320,25 @@ export default function GraphVisualizer() {
         
         {/* Left: Graph SVG Canvas */}
         <div className="ds-container glass blue-glow-subtle" id="graph-canvas-container">
-          <div className="ds-header">
+          <div className="ds-header" style={{ borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '0.8rem', marginBottom: '0.8rem' }}>
              <h3 id="canvas-title">Visualization</h3>
              <span className="badge glass">Nodes: {Object.keys(nodes).length} | Edges: {edges.length}</span>
           </div>
+
+          <div className="graph-legend" style={{ display: 'flex', gap: '1.2rem', padding: '0 1.5rem', fontSize: '0.85rem', flexWrap: 'wrap', justifyContent: 'center' }}>
+             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><div style={{ width: '12px', height: '12px', borderRadius: '50%', background: 'rgba(15, 23, 42, 0.95)', border: '2px solid var(--primary-color)' }}></div> <span style={{ color: 'var(--text-muted)' }}>Unvisited</span></div>
+             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#F59E0B' }}></div> <span style={{ color: 'var(--text-muted)' }}>Queued/Discovered</span></div>
+             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><div style={{ width: '12px', height: '12px', borderRadius: '50%', background: 'var(--primary-color)' }}></div> <span style={{ color: 'var(--text-muted)' }}>Current Node</span></div>
+             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#10B981' }}></div> <span style={{ color: 'var(--text-muted)' }}>Visited</span></div>
+          </div>
           
-          <div className="tree-wrapper" id="graph-wrapper" style={{ overflow: 'hidden', height: '500px', position: 'relative' }} ref={svgRef}>
-             <svg id="graph-svg">
+          <div className="tree-wrapper" id="graph-wrapper" style={{ height: '500px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+             <svg id="graph-svg" viewBox="0 0 800 500" preserveAspectRatio="xMidYMid meet" style={{ width: '100%', height: '100%' }}>
                 <defs>
-                   <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="25" refY="3.5" orient="auto">
-                      <polygon points="0 0, 10 3.5, 0 7" className="edge-arrow" />
+                   <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="40" refY="3.5" orient="auto">
+                      <polygon points="0 0, 10 3.5, 0 7" fill="rgba(255,255,255,0.7)" />
                    </marker>
-                   <marker id="arrowhead-highlight" markerWidth="10" markerHeight="7" refX="25" refY="3.5" orient="auto">
+                   <marker id="arrowhead-highlight" markerWidth="10" markerHeight="7" refX="40" refY="3.5" orient="auto">
                       <polygon points="0 0, 10 3.5, 0 7" fill="#F59E0B" />
                    </marker>
                 </defs>
@@ -329,9 +354,18 @@ export default function GraphVisualizer() {
 
                     return (
                         <g key={`edge-${i}`}>
-                            <line x1={fromNode.x} y1={fromNode.y} x2={toNode.x} y2={toNode.y} className={`graph-edge ${edgeClasses}`} markerEnd={isDirected ? 'url(#arrowhead)' : undefined} />
-                            <circle cx={mx} cy={my} r="10" className="delete-btn" onClick={() => deleteEdge(edge.from, edge.to)} style={{cursor: 'pointer'}} />
-                            <text x={mx} y={my} className="delete-text" onClick={() => deleteEdge(edge.from, edge.to)} style={{cursor: 'pointer'}}>×</text>
+                            <line 
+                                x1={fromNode.x} y1={fromNode.y} 
+                                x2={toNode.x} y2={toNode.y} 
+                                stroke={edgeClasses.includes('edge-traversed') ? '#F59E0B' : 'rgba(255, 255, 255, 0.6)'} 
+                                strokeWidth={edgeClasses.includes('edge-traversed') ? '6' : '4'} 
+                                markerEnd={isDirected ? 'url(#arrowhead)' : undefined} 
+                            />
+                            
+                            <g className="delete-group" onClick={() => deleteEdge(edge.from, edge.to)} style={{cursor: 'pointer'}}>
+                               <circle cx={mx} cy={my} r="14" fill="#ef4444" stroke="rgba(255,255,255,0.2)" strokeWidth="2" />
+                               <text x={mx} y={my + 1} fill="white" fontSize="16px" textAnchor="middle" dominantBaseline="central" fontWeight="bold">×</text>
+                            </g>
                         </g>
                     )
                 })}
@@ -339,12 +373,14 @@ export default function GraphVisualizer() {
                 {Object.values(nodes).map(node => {
                     const nodeClasses = elementStates[`node-${node.id}`] || '';
                     return (
-                        <g key={node.id} className={`graph-node ${nodeClasses}`} transform={`translate(${node.x}, ${node.y})`}>
-                            <circle cx="0" cy="0" r="22" className="node-circle" />
-                            <text x="0" y="0" className="node-text">{node.id}</text>
+                        <g key={node.id} transform={`translate(${node.x}, ${node.y})`}>
+                            <circle cx="0" cy="0" r="30" fill={nodeClasses.includes('current') ? 'var(--primary-color)' : nodeClasses.includes('visited') ? '#10B981' : nodeClasses.includes('queued') ? '#F59E0B' : 'rgba(15, 23, 42, 0.95)'} stroke={nodeClasses ? 'white' : 'var(--primary-color)'} strokeWidth="4" />
+                            <text x="0" y="2" fill="white" fontSize="22px" fontWeight="bold" textAnchor="middle" dominantBaseline="central">{node.id}</text>
                             
-                            <circle cx="18" cy="-18" r="8" className="delete-btn" onClick={(e) => deleteVertex(node.id, e)} style={{cursor: 'pointer'}} />
-                            <text x="18" y="-18" className="delete-text" onClick={(e) => deleteVertex(node.id, e)} style={{cursor: 'pointer'}}>×</text>
+                            <g className="delete-group" onClick={(e) => deleteVertex(node.id, e)} style={{cursor: 'pointer'}}>
+                               <circle cx="26" cy="-26" r="10" fill="#ef4444" stroke="rgba(255,255,255,0.2)" strokeWidth="1.5" />
+                               <text x="26" y="-24" fill="white" fontSize="12px" textAnchor="middle" dominantBaseline="central" fontWeight="bold">×</text>
+                            </g>
                         </g>
                     );
                 })}
