@@ -7,6 +7,13 @@ import QueueVisualizer from './pages/QueueVisualizer';
 import LinkedListVisualizer from './pages/LinkedListVisualizer';
 import TreeVisualizer from './pages/TreeVisualizer';
 import GraphVisualizer from './pages/GraphVisualizer';
+import BFS from './pages/code-visualizer/Pages/Graph/BFS';
+import MiddleNode from './pages/code-visualizer/Pages/LinkedList/MiddleNode';
+import ReverseLinkedList from './pages/code-visualizer/Pages/LinkedList/ReverseLinkedList';
+import StackUsingQueuesPopCostly from './pages/code-visualizer/Pages/Queue/StackUsingQueuesPopCostly';
+import ParenthesisWrapper from './pages/code-visualizer/Pages/Stack/ParenthesisWrapper';
+import StringReversalWrapper from './pages/code-visualizer/Pages/Stack/StringReversalWrapper';
+import MaxDepth from './pages/code-visualizer/Pages/Tree/MaxDepth';
 import './index.css';
 
 export const ThemeContext = createContext();
@@ -39,6 +46,16 @@ function App() {
             <Route path="linkedlist" element={<LinkedListVisualizer />} />
             <Route path="tree" element={<TreeVisualizer />} />
             <Route path="graph" element={<GraphVisualizer />} />
+            <Route path="code-visualizer/graph/bfs" element={<BFS />} />
+            <Route path="code-visualizer/linkedlist/middle-node" element={<MiddleNode />} />
+            <Route path="code-visualizer/linkedlist/reverse" element={<ReverseLinkedList />} />
+            <Route path="code-visualizer/queue/lifo-stack" element={<StackUsingQueuesPopCostly />} />
+            <Route path="code-visualizer/queue/stack-using-queues" element={<StackUsingQueuesPopCostly />} />
+            <Route path="code-visualizer/stack/parenthesis" element={<ParenthesisWrapper />} />
+            <Route path="code-visualizer/stack/parenthesis-checker" element={<ParenthesisWrapper />} />
+            <Route path="code-visualizer/stack/reverse-string" element={<StringReversalWrapper />} />
+            <Route path="code-visualizer/stack/string-reversal" element={<StringReversalWrapper />} />
+            <Route path="code-visualizer/tree/max-depth" element={<MaxDepth />} />
           </Route>
         </Routes>
       </BrowserRouter>
@@ -46,4 +63,4 @@ function App() {
   );
 }
 
-export default App;
+export default App;
