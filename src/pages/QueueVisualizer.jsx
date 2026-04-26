@@ -4,7 +4,8 @@ import { useVisualizerEngine } from '../hooks/useVisualizerEngine';
 const MAX_CAPACITY = 6;
 const MEM_START_ADDR = 1000;
 
-export default function QueueVisualizer() {
+export default function QueueVisualizer({ isApplicationMode }) {
+
   const engine = useVisualizerEngine();
   const [memory, setMemory] = useState(new Array(MAX_CAPACITY).fill(null));
   const [queueState, setQueueState] = useState({ front: 0, rear: -1, size: 0 });
@@ -232,9 +233,10 @@ export default function QueueVisualizer() {
   return (
     <main className="visualizer-page">
       <div className="visualizer-header">
-        <h1 className="text-gradient">Queue Visualizer</h1>
-        <p>Explore the FIFO (First-In-First-Out) schedule with interactive pointers.</p>
+        <h1 className="text-gradient">{isApplicationMode ? 'Print Spooler (Queue)' : 'Queue Visualizer'}</h1>
+        <p>{isApplicationMode ? 'Simulating a printer queue where jobs are processed in order.' : 'Explore the FIFO (First-In-First-Out) schedule with interactive pointers.'}</p>
       </div>
+
 
       <div className="controls-panel glass">
         <div className="control-group">

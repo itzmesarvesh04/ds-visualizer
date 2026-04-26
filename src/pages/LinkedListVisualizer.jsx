@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useVisualizerEngine } from '../hooks/useVisualizerEngine';
 
-export default function LinkedListVisualizer() {
+export default function LinkedListVisualizer({ isApplicationMode }) {
+
   const engine = useVisualizerEngine();
   
   // memoryPool array elements: { addr: '0x1A2', value: '10', nextAddr: '0x3F4' }
@@ -498,9 +499,10 @@ export default function LinkedListVisualizer() {
   return (
     <main className="visualizer-page">
       <div className="visualizer-header">
-        <h1 className="text-gradient">Linked List Visualizer</h1>
-        <p>Understand dynamic memory allocation and pointer traversal.</p>
+        <h1 className="text-gradient">{isApplicationMode ? 'Music Player (Linked List)' : 'Linked List Visualizer'}</h1>
+        <p>{isApplicationMode ? 'Each song is a node pointing to the next, just like a music playlist.' : 'Understand dynamic memory allocation and pointer traversal.'}</p>
       </div>
+
 
       <div className="controls-panel glass">
         <div className="control-group">

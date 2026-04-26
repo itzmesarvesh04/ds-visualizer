@@ -4,7 +4,8 @@ import MemoryPanel from '../components/common/MemoryPanel';
 
 const MEM_BASE_ADDR = 0x2A0; // Base simulated memory address for graph
 
-export default function GraphVisualizer() {
+export default function GraphVisualizer({ isApplicationMode }) {
+
   const engine = useVisualizerEngine();
 
   // State structures
@@ -312,9 +313,10 @@ export default function GraphVisualizer() {
   return (
     <main className="visualizer-page">
       <div className="visualizer-header">
-        <h1 className="text-gradient">Graph Visualizer</h1>
-        <p>Explore relationships between nodes using Undirected graphs. Learn BFS and DFS algorithms step-by-step.</p>
+        <h1 className="text-gradient">{isApplicationMode ? 'Social Network / Maps (Graph)' : 'Graph Visualizer'}</h1>
+        <p>{isApplicationMode ? 'Users are nodes and friendships are edges in this network model.' : 'Explore relationships between nodes using Undirected graphs. Learn BFS and DFS algorithms step-by-step.'}</p>
       </div>
+
 
       <div className="visualizer-workspace graph-upgrade-workspace">
         

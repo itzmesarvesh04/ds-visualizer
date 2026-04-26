@@ -6,7 +6,8 @@ import TraversalPath from '../components/common/TraversalPath';
 const MAX_NODES = 15;
 const MEM_BASE_ADDR = 0x1A0; // Base simulated memory address
 
-export default function TreeVisualizer() {
+export default function TreeVisualizer({ isApplicationMode }) {
+
   const engine = useVisualizerEngine();
   
   // nodesMap: { [id]: { id, value, leftId, rightId } }
@@ -555,9 +556,10 @@ export default function TreeVisualizer() {
   return (
     <main className="visualizer-page">
       <div className="visualizer-header">
-        <h1 className="text-gradient">Binary Search Tree Visualizer</h1>
-        <p>Explore hierarchical data with O(log N) operations and recursive traversals.</p>
+        <h1 className="text-gradient">{isApplicationMode ? 'File System (Tree)' : 'Binary Search Tree Visualizer'}</h1>
+        <p>{isApplicationMode ? 'Folders and files are organized in a hierarchical tree structure.' : 'Explore hierarchical data with O(log N) operations and recursive traversals.'}</p>
       </div>
+
 
       <div className="controls-panel glass">
         <div className="control-group">

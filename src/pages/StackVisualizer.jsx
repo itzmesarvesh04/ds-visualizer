@@ -4,7 +4,8 @@ import { useVisualizerEngine } from '../hooks/useVisualizerEngine';
 const MAX_CAPACITY = 6;
 const MEM_START_ADDR = 1000;
 
-export default function StackVisualizer() {
+export default function StackVisualizer({ isApplicationMode }) {
+
   const engine = useVisualizerEngine();
   const [stack, setStack] = useState([]);
   const [inputValue, setInputValue] = useState('');
@@ -267,9 +268,10 @@ export default function StackVisualizer() {
   return (
     <main className="visualizer-page">
       <div className="visualizer-header">
-        <h1 className="text-gradient">Stack Visualizer</h1>
-        <p>Master the LIFO (Last-In-First-Out) concept through interactive animations.</p>
+        <h1 className="text-gradient">{isApplicationMode ? 'Undo/Redo (Stack)' : 'Stack Visualizer'}</h1>
+        <p>{isApplicationMode ? 'Simulating an Undo/Redo system where each action is pushed to the stack.' : 'Master the LIFO (Last-In-First-Out) concept through interactive animations.'}</p>
       </div>
+
 
       <div className="controls-panel glass">
         <div className="control-group">

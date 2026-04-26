@@ -14,7 +14,11 @@ import StackUsingQueuesPopCostly from './pages/code-visualizer/Pages/Queue/Stack
 import ParenthesisWrapper from './pages/code-visualizer/Pages/Stack/ParenthesisWrapper';
 import StringReversalWrapper from './pages/code-visualizer/Pages/Stack/StringReversalWrapper';
 import MaxDepth from './pages/code-visualizer/Pages/Tree/MaxDepth';
+import DSLearningPath from './pages/DSLearningPath';
+import DSQuiz from './pages/DSQuiz';
+import DSApplication from './pages/DSApplication';
 import './index.css';
+
 
 export const ThemeContext = createContext();
 
@@ -41,11 +45,8 @@ function App() {
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route index element={<Home />} />
-            <Route path="stack" element={<StackVisualizer />} />
-            <Route path="queue" element={<QueueVisualizer />} />
-            <Route path="linkedlist" element={<LinkedListVisualizer />} />
-            <Route path="tree" element={<TreeVisualizer />} />
-            <Route path="graph" element={<GraphVisualizer />} />
+            
+            {/* Code Visualizer routes should come before dynamic DS routes */}
             <Route path="code-visualizer/graph/bfs" element={<BFS />} />
             <Route path="code-visualizer/linkedlist/middle-node" element={<MiddleNode />} />
             <Route path="code-visualizer/linkedlist/reverse" element={<ReverseLinkedList />} />
@@ -56,7 +57,22 @@ function App() {
             <Route path="code-visualizer/stack/reverse-string" element={<StringReversalWrapper />} />
             <Route path="code-visualizer/stack/string-reversal" element={<StringReversalWrapper />} />
             <Route path="code-visualizer/tree/max-depth" element={<MaxDepth />} />
+
+            {/* Dynamic DS Learning Path */}
+            <Route path=":ds" element={<DSLearningPath />} />
+            
+            {/* Specific Theory Routes */}
+            <Route path="stack/theory" element={<StackVisualizer />} />
+            <Route path="queue/theory" element={<QueueVisualizer />} />
+            <Route path="linkedlist/theory" element={<LinkedListVisualizer />} />
+            <Route path="tree/theory" element={<TreeVisualizer />} />
+            <Route path="graph/theory" element={<GraphVisualizer />} />
+            
+            {/* Dynamic Quiz & Application Routes */}
+            <Route path=":ds/quiz" element={<DSQuiz />} />
+            <Route path=":ds/application" element={<DSApplication />} />
           </Route>
+
         </Routes>
       </BrowserRouter>
     </ThemeContext.Provider>
